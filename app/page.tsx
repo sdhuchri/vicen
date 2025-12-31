@@ -136,6 +136,21 @@ Lebih baik bilang "aku nggak tahu" daripada mengarang informasi yang salah.`,
       });
 
       const data = await response.json();
+      
+      // Check if there's an error in the response
+      if (data.error) {
+        console.error('API Error:', data.error);
+        setIsTyping(false);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: `Waduh, ada error: ${data.error}. Coba lagi yuk 😅`,
+          },
+        ]);
+        return;
+      }
+      
       const aiMessage: Message = {
         role: "assistant",
         content: data.choices[0].message.content,
@@ -144,6 +159,7 @@ Lebih baik bilang "aku nggak tahu" daripada mengarang informasi yang salah.`,
       setIsTyping(false);
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
+      console.error('Catch error:', error);
       setIsTyping(false);
       setMessages((prev) => [
         ...prev,
